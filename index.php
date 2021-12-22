@@ -15,10 +15,10 @@ exit();
 
 // Secure formhandling
 if (!filter_input(INPUT_POST, "sEmail")) {
-    echo("Het formulier is leeg");
+    echo ("Het formulier is leeg");
 } else {
     $sEmail       = input_check('sEmail', 'email');
-    $sPassword    = inpit_check('sPassword', 'wachtwoord');
+    $sPassword    = input_check('sPassword', 'wachtwoord');
 }
 
 base64test();
@@ -33,36 +33,35 @@ $booAccess = false;
 $strSQL = "SELECT * FROM 'tbl_users' ;";
 $arrAllUsers = PdoSqlReturnArray($strSQL);
 //Loop through each record
-foreach($arrAllUsers as $arrUser){
+foreach ($arrAllUsers as $arrUser) {
 
     //Decrypt each record
-        //Fetch the decryption record of the user
-        $strSQL = "SELECT * FROM `tbl_encryptiondata` WHERE `intFK_intUserRecordID` = ".$arrUser["tbl_users"].";";
-        //Decrypt the user values
-        $arrDecryptionData = array();
-        $arrDecryptionData['cyphertext']    = $arrUser['encEmailAddress'];
-        $arrDecryptionData['key']           = $arrEncryptionData['encEmailKey']; 
-        $arrDecryptionData['nonce']         = $arrEncryptionData['encEmailNonce'];
-        $strDecryptedEmail                  = decrypt($arrDecryptionData) == $sEmail;
-        //Verify the username with the form username
-        echo($strDecryptedEmail);
-        //Verify the hashed password with the form password
-        //Set Acces to true
-//End foreach
+    //Fetch the decryption record of the user
+    $strSQL = "SELECT * FROM `tbl_encryptiondata` WHERE `intFK_intUserRecordID` = " . $arrUser["tbl_users"] . ";";
+    //Decrypt the user values
+    $arrDecryptionData = array();
+    $arrDecryptionData['cyphertext']    = $arrUser['encEmailAddress'];
+    $arrDecryptionData['key']           = $arrEncryptionData['encEmailKey'];
+    $arrDecryptionData['nonce']         = $arrEncryptionData['encEmailNonce'];
+    //      $strDecryptedEmail                  = decrypt($arrDecryptionData) == $sEmail;
+    //Verify the username with the form username
+    echo ($strDecryptedEmail);
+    //Verify the hashed password with the form password
+    //Set Acces to true
+    //End foreach
 }
-    
+
 
 
 //verification correct
-if($booAcces){
-    header('location:mainsite.php')
-}else{
-    echo("Verkeerd gebruikersnaam en/of wachtwoord")
+if ($booAcces) {
+    header('location:mainsite.php');
+} else {
+    echo ("Verkeerd gebruikersnaam en/of wachtwoord");
 }
-
 /*================ Show the input form ===================================*/
 
-echo("
+echo ("
 <!doctype html>
 <html>
     <head>
