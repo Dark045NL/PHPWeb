@@ -2,6 +2,8 @@
 include_once('./security_inc.php'); // Import the security functions
 include_once('./database_inc.php'); // Get the database functions
 
+base64test();
+exit();
 /* ================= Handle the input form ==============================*/
 
 // Insecure formhandling
@@ -19,6 +21,7 @@ if (!filter_input(INPUT_POST, "sEmail")) {
     $sPassword    = inpit_check('sPassword', 'wachtwoord');
 }
 
+base64test();
 /* ======================= Verifiication of the acces ================ */
 //Set no access boolen
 $booAccess = false;
@@ -41,11 +44,11 @@ foreach($arrAllUsers as $arrUser){
         $arrDecryptionData['key']           = $arrEncryptionData['encEmailKey']; 
         $arrDecryptionData['nonce']         = $arrEncryptionData['encEmailNonce'];
         $strDecryptedEmail                  = decrypt($arrDecryptionData) == $sEmail;
-    //Verify the username with the form username
-    echo($strDecryptedEmail);
-    //Verify the hashed password with the form password
-    //Set Acces to true
-    //End foreach
+        //Verify the username with the form username
+        echo($strDecryptedEmail);
+        //Verify the hashed password with the form password
+        //Set Acces to true
+//End foreach
 }
     
 

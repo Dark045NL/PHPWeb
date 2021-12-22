@@ -64,3 +64,18 @@ function decrypt(string $p_encArrayValues){
     // Return the plaintext
     return($strPlaintext);
 }
+
+function base64test(){
+  $encKey = random_bytes(SODIUM_CRYPTO_BOX_SECRETKEYBYTES); // 32bits key
+  $encNonce = random_bytes(SODIUM_CRYPTO_BOX_NONCEBYTES);
+  echo($encKey."<br>");
+  echo($encNonce."<hr>");
+  $b64Key = base64_encode($encKey);
+  $b64Nonce = base64_encode($encNonce);
+  // store to db
+  $d64Key = base64_decode($b64Key);
+  $d64Nonce = base64_decode($b64Nonce);
+  echo($d64Key."<br>");
+  echo($d64Nonce."<hr>");
+  if($b64Nonce===$d64Nonce)(echo("Beide waardes zijn exact het zelfde"))
+  }
