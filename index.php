@@ -1,15 +1,8 @@
 <?php
 include_once('./security_inc.php'); // Import the security functions
+include_once('./database_inc.php'); // Get the database functions
 
 /* ================= Handle the input form ==============================*/
-
-// Secure formhandling
-if (!filter_input(INPUT_POST, "sEmail")) {
-    echo("Het formulier is leeg");
-} else {
-    $sEmail = checkpost('sEmail');
-    $sPassword = checkpost('sPassword');
-}
 
 // Insecure formhandling
 //if(!empty($_POST)){
@@ -18,6 +11,46 @@ if (!filter_input(INPUT_POST, "sEmail")) {
 //    $sPassword = $_POST['sPassword'];
 //}
 
+// Secure formhandling
+if (!filter_input(INPUT_POST, "sEmail")) {
+    echo("Het formulier is leeg");
+} else {
+    $sEmail = input_check('sEmail', 'email');
+    $sPassword = inpit_check('sPassword', 'wachtwoord');
+}
+
+/* ======================= Verifiication of the acces ================ */
+//Set no access boolen
+$booAccess = false;
+
+//The verificatiion procces
+
+
+//fetch all useraccounts from the database
+$strSQL = "SELECT * FROM 'tbl_users'";
+$arrAllUsers = PdoSqlReturnArray($strSQL);
+//Loop through each record
+foeach($arrAllUsers as $arrUser){
+
+    //Decrypt each record
+        //Fetch the decryption record of the user
+
+        //decrypt the user values
+        
+    //Verify the username with the form username
+    //Verify the hashed password with the form password
+    //Set Acces to true
+    //End foreach
+}
+    
+
+
+//verification correct
+if($booAcces){
+    header('location:mainsite.php')
+}else{
+    echo("Verkeerd gebruikersnaam en/of wachtwoord")
+}
 
 /*================ Show the input form ===================================*/
 
