@@ -27,16 +27,16 @@ $booAccess = false;
 
 
 //fetch all useraccounts from the database
-$strSQL = "SELECT * FROM 'tbl_users'";
+$strSQL = "SELECT * FROM 'tbl_users' ;";
 $arrAllUsers = PdoSqlReturnArray($strSQL);
 //Loop through each record
-foeach($arrAllUsers as $arrUser){
+foreach($arrAllUsers as $arrUser){
 
     //Decrypt each record
         //Fetch the decryption record of the user
-
+        $strSQL = "SELECT * FROM `tbl_encryptiondata` WHERE `intFK_intUserRecordID` = ".$arrUser["tbl_users"].";";
         //decrypt the user values
-        
+
     //Verify the username with the form username
     //Verify the hashed password with the form password
     //Set Acces to true
