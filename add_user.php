@@ -3,65 +3,59 @@
 include_once('security_inc.php');
 include_once('database_inc.php');
 
-encrypt("hello");
-
-/* ================= Handle the input form ==============================*/
+    /* ================== Handle the input form ==============================*/
 if(!empty($_POST)){
     $strFirstname         = input_check('strFirstname', 'voornaam');
     $strInsertion         = checkpost('strInsertion');
     $strSurname           = input_check('strSurname', 'achternaam');
-    $intPostalcodeNumbers = input_check('intPostalcodeNumbers', 'potcodecijfers');
+    $intPostalcodeNumbers = input_check('intPostalcodeNumbers', 'postcodecijfers');
     $strPostalcodeLetters = input_check('strPostalcodeLetters', 'postcodeletters');
     $strEmailAddress      = input_check('strEmailAddress', 'email');
-    $strPassword          = input_check('strPassowrd', 'email');
     $strPasswordOne       = input_check('strPasswordOne', 'wachtwoord');
-    $strPasswordTwo       = input_check('strPasswordTwo', '2e wachtwoord');
-    $hshPassword;
+    $strPasswordTwo       = input_check('strPasswordTwo', 'herhaal wachtwoord');
 
-    //verify double password
     if($strPasswordOne===$strPasswordTwo){
-        //Verify the content of each variable
-        if(!empty($strFirstname)&&!empty($strSurname)&&!empty($intpostalcodeNumbers)&&!empty($strPostalcodeLetters)&&!empty($strEmailAddress)&&!empty($strpaswordOne)){
-            $arrEncryptedFirstname =    encrypt ($strFirstname);
-            $arrEncryptedInsertion =    encrypt ($strInsertion);  
-            $arrEncryptedSurname =      encrypt ($strSurname);
-            $arrEncryptedEmailAddress = encrypt ($strEmailAddress);
-            // Hash the Password
-            $hshPassword = password_hash($strPasswordOne, PASSWORD_DEFAULT);
-            //Prepare SQL statement
-            $strSQL = "INSERT INTO `tbl_users`  (`encFirstname`,`encInsertion`,`encSurname`,`intPostalcodeNumbers`,`strPostalcodeLetters`,`encEmailAddress`,`encPassword`)
-            VALUES ('".$arrEncryptedFirstname['cypertext']."',
-                '".$arrEncryptedInsertion['cypertext']."',
-                '".$arrEncryptedSurname['cypertext']."',
-                '".$intPostalcodeNumbers."',
-                '".$strPostalcodeLetters."',
-                '".$arrEncryptedEmailAddress['cypertext']."',
-                '".$hshPassword."');";
-            // execute the SQL statement
-            $booSucces = PdoSqlReturnTrue($strSQL);
-        }
-    
+        /* ================ Encrypt personal data ================================ */
+        $arrEncryptedFirstname      = encrypt($strFirstname);
+        $arrEncryptedInsertion      = encrypt($strInsertion);
+        $arrEncryptedSurname        = encrypt($strSurname);
+        $arrEncryptedEmailAddress   = encrypt($strEmailAddress);
+        // Hash the password
+        $hshPassword = password_hash($strPasswordOne, PASSWORD_DEFAULT);
+
+        // ==================== Store the data in the database ====================
+        // Prepare the SQL statement
+        $strSQL = "INSERT INTO `tbl_users` (`encFirstname`,`encInsertion`,`encSurname`,`intPostalcodeNumbers`,`strPostalcodeLetters`,`encEmailAddress`,`encPassword`) 
+                 VALUES ('".$arrEncryptedFirstname['cypertext']."',
+                 '".$arrEncryptedInsertion['cypertext']."',
+                 '".$arrEncryptedSurname['cypertext']."',
+                 '".$intPostalcodeNumbers."',
+                 '".$strPostalcodeLetters."',
+                 '".$arrEncryptedEmailAddress['cypertext']."',
+                 '".$hshPassword."')";
+        // Execute the SQL statement
+        $booSucces = PdoSqlReturnTrue($strSQL);
         // If success fetch the record ID
         if($booSucces){
-        $strSQL = "SELECT * FROM `tbl_users` WHERE `encFirstname` = '".$arrEncryptedFirstname['cypertext']."';";
-        $arrUserRecord = PdoSqlReturnArray($strSQL);
-        $strSQL = "INSERT INTO `tbl_encryptiondata` (`intFK_intUserRecordID`,`encFirstnameKey`,`encFirstnameNonce`,`encInsertionKey`,`encInsertionNonce`,`encSurnameKey`,`encSurnameNonce`,`encEmailKey`,`encEmailNonce`) ";
-        $strSQL .= "VALUES('".$arrUserRecord[0]['intUser_ID']."',
-        '".$arrEncryptedFirstname['key']."','".$arrEncryptedFirstname['nonce']."',
-        '".$arrEncryptedInsertion['key']."','".$arrEncryptedInsertion['nonce']."',
-        '".$arrEncryptedSurname['key']."','".$arrEncryptedSurname['nonce']."',
-        '".$arrEncryptedEmailAddress['key']."','".$arrEncryptedEmailAddress['nonce']."');";
-        $booSucces = PdoSqlReturnTrue($strSQL);
-        }
-    
-    }
-    else{
-        echo("Wachtwoorden komen niet overeen, Probeer opnieuw DUMBASS");
-    }
-    var_dump($arrEncryptedFirstname);
-
+            $strSQL = "SELECT * FROM `tbl_users` WHERE `encFirstname` = '".$arrEncryptedFirstname['cypertext']."';";
+            $arrUserRecord = PdoSqlReturnArray($strSQL);
+            // After the fetch store the key and the nonce for the firstname of this user.
+            $strSQL = "INSERT INTO `tbl_encryptiondata` (`intFK_intUserRecordID`,`encFirstnameKey`,`encFirstnameNonce`,`encInsertionKey`,`encInsertionNonce`,`encSurnameKey`,`encSurnameNonce`,`encEmailKey`,`encEmailNonce`) ";
+            $strSQL .= "VALUES('".$arrUserRecord[0]['intUser_ID']."',
+                    '".$arrEncryptedFirstname['key']."','".$arrEncryptedFirstname['nonce']."',
+                    '".$arrEncryptedInsertion['key']."','".$arrEncryptedInsertion['nonce']."',
+                    '".$arrEncryptedSurname['key']."','".$arrEncryptedSurname['nonce']."',
+                    '".$arrEncryptedEmailAddress['key']."','".$arrEncryptedEmailAddress['nonce']."')";
+            $booSucces = PdoSqlReturnTrue($strSQL);
+        } // End if Succes
+    } // End if double password check
 }
-// ----------- An add user form --------------}
+
+
+
+
+// ----------- An add user form --------------
+
 echo("
     <!doctype html>
     <html>
@@ -75,16 +69,18 @@ echo("
         <ul>
         <hr/>
         <form method='post'>
-            Voornaam:               <input type='text'      name='strFirstname'><br/>
-            Tussenvoegsel:          <input type='text'      name='strInsertion'><br/>
-            Achternaam:             <input type='text'      name='strSurname'><br/>
-            Postcode cijfers:       <input type='number'    name='intPostalcodeNumbers'><br/>
-            Postcode letters:       <input type='text'      name='strPostalcodeLetters'><br/>
-            Email:                  <input type='email'     name='strEmailAddress'><br/>
-            Wachtwoord:             <input type='password'  name='strPasswordOne'><br/>
-            Herhaal Wachtwoord:     <input type='password'  name='strPasswordTwo'><br/>
+            Voornaam:           <input type='text'      name='strFirstname'><br/>
+            Tussenvoegsel:      <input type='text'      name='strInsertion'><br/>
+            Achternaam:         <input type='text'      name='strSurname'><br/>
+            Postcode cijfers:   <input type='number'    name='intPostalcodeNumbers'><br/>
+            Postcode letters:   <input type='text'      name='strPostalcodeLetters'><br/>
+            Email:              <input type='email'     name='strEmailAddress'><br/>
+            Wachtwoord:         <input type='password'  name='strPasswordOne'><br/>
+            Herhaal wachtwoord: <input type='password'  name='strPasswordTwo'><br/>
             <button type='submit'>Registreer</button>
         </form>
         </body>
     </html>
 ");
+
+

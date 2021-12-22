@@ -25,7 +25,7 @@ function input_check(string $p_strInputvalue, string $p_strFieldname){
   if (!filter_input(INPUT_POST, $p_strInputvalue)) {
     echo("Uw heeft geen ".$p_strFieldname." ingevuld.<br/>");
   }else{
-        $strInputValue = checkpost($p_strInputvalue);
+    $strInputValue = checkpost($p_strInputvalue);
   } // End if 
   return($strInputValue);
 } // End function
@@ -50,17 +50,17 @@ function encrypt(string $p_strPlaintext){
     return($arrEncryptedValues);    
 }
 
-function decrypt($p_arrDatabaseValues){
-    // Devide the array in separated
-    $strCypherText = $p_arrDatabaseValues['cypertext'];
-    $encReturnKey = $p_arrDatabaseValues['key'];
-    $encReturnNonce = $p_arrDatabaseValues['nonce'];
-    // Database friendly keys
-    $encKey = base64_decode($encReturnKey);
-    $encNonce = base64_decode($encReturnNonce);
-    $strCypher = base64_decode($strCypherText);
+function decrypt(string $p_encArrayValues){
+    // Devide the values is separated variables
+    $encCypherText  = $p_encArrayValues['cypertext'];
+    $encReturnKey   = $p_encArrayValues['key'];
+    $encReturnNonce = $p_encArrayValues['nonce'];
+    // Decode the values
+    $encPlaintext   = base64_decode($encCypherText);
+    $intNonce       = base64_decode($encReturnNonce);
+    $intKey         = base64_decode($encReturnKey);
     // Decrypt the cyphertext
-    $strPlainText = sodium_crypto_secretbox_open($strCypher, $encNonce, $encKey);
-    // Return the plaintext back to the main program
-    return($strPlainText);
+    $strPlaintext   = sodium_crypto_secretbox_open($encPlaintext,$intNonce,$intKey);
+    // Return the plaintext
+    return($strPlaintext);
 }

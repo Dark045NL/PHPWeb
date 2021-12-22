@@ -12,9 +12,9 @@
 // @parameters: none
 function connectToDB(){
     $Hostname   = "127.0.0.1";                          // Database servername
-    $DBname     = "database_csvp";                             // Database name
-    $Username   = "phpuser";                            // Database username
-    $Password   = "7slUnhm3zuWcm86m";                   // Database user password    
+    $DBname     = "csvp-c20";                             // Database name
+    $Username   = "DbUser";                            // Database username
+    $Password   = "CmEOpEcFTEnbTwvq";                   // Database user password    
     $conn = new PDO("mysql:host=$Hostname; dbname=$DBname", $Username, $Password); // Create the actual connection
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     return($conn);

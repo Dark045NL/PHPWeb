@@ -9,18 +9,7 @@ if (!filter_input(INPUT_POST, "sEmail")) {
 } else {
     $sEmail = checkpost('sEmail');
     $sPassword = checkpost('sPassword');
-    $booAcces = false;
-    //Fetch all records drom database
-    //Loop thru each record
-    //Decrypt the record values
-    //Verify if the values are the same as the form values
-    //If the values are the same,acces granted else no acces
-    if($booAcces){
-        header('location:mainsite.php');
-    }else{
-        echo("Verkeerde email/wachtwoord ingevoerd");
-    } //End if access
-} //End if filter input
+}
 
 // Insecure formhandling
 //if(!empty($_POST)){
@@ -52,10 +41,10 @@ echo("
         <hr>
         <input type='submit' value='aanmelden'><br/>
         </form>
-    </body>
-</html>
-
-
+    </body>       
+</html>       
+        
+        
 ");
 
 // <script src='d:\hackscript.js'> </script>Mijn hack
